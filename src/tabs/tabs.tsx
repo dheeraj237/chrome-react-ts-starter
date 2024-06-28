@@ -7,21 +7,23 @@ import { Link } from 'react-router-dom'
 
 function Tabs() {
     return (
-        <div>
-            <ul>
-                <li>
-                    <Link to="/">Home</Link>
-                </li>
-                <li>
-                    <Link to="/about">About</Link>
-                </li>
-            </ul>
-            <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/about" element={<About />} />
-            </Routes>
-        </div>
-    )
+			<div>
+				<ul>
+					<li>
+						<Link to="/">Home</Link>
+					</li>
+					<li>
+						<Link to="/about">About</Link>
+					</li>
+				</ul>
+				<hr />
+				<h1>Tab Content</h1>
+				<Routes>
+					<Route path="/" element={<Home />} />
+					<Route path="/about" element={<About />} />
+				</Routes>
+			</div>
+		);
 }
 
 export default Tabs

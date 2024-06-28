@@ -3,7 +3,7 @@ import "./popup.css";
 
 const Popup = () => {
 	return (
-		<div>
+		<div className="popupContainer">
 			<h1 className="text-4xl text-green-500">Popup Box</h1>
 		</div>
 	);

@@ -1,10 +1,41 @@
-# Chrome React TS Extension Starter
+# foo-extension
 
-## React 18 and TailwindCSS Supported
+> a chrome extension tools built with Vite + React, and Manifest v3
 
-- [x] Webpack Compatible
-- [x] TailwindCSS 3.0 Compatible
+## Installing
 
+1. Check if your `Node.js` version is >= **14**.
+2. Change or configurate the name of your extension on `src/manifest`.
+3. Run `npm install` to install the dependencies.
 
+## Developing
 
-<a href="https://buymeacoffee.com/dheeraj237" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="41" width="174"></a>
+run the command
+
+```shell
+$ cd foo-extension
+
+$ npm run dev
+```
+
+### Chrome Extension Developer Mode
+
+1. set your Chrome browser 'Developer mode' up
+2. click 'Load unpacked', and select `foo-extension/build` folder
+
+### Nomal FrontEnd Developer Mode
+
+1. access `http://0.0.0.0:3000/`
+2. when debugging popup page, open `http://0.0.0.0:3000//popup.html`
+3. when debugging options page, open `http://0.0.0.0:3000//options.html`
+
+## Packing
+
+After the development of your extension run the command
+
+```shell
+$ npm run build
+```
+
+Now, the content of `build` folder will be the extension ready to be submitted to the Chrome Web Store. Just take a look at the [official guide](https://developer.chrome.com/webstore/publish) to more infos about publishing.
+

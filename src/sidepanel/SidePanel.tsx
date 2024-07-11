@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react'
 
-import './Options.css'
+import './SidePanel.css'
 import { ActionType } from '../types/Chrome'
 
-export const Options = () => {
+export const SidePanel = () => {
   const [countSync, setCountSync] = useState(0)
 
   useEffect(() => {
@@ -20,10 +20,10 @@ export const Options = () => {
 
   return (
     <main>
-      <h3>Options Page</h3>
+      <h3>SidePanel Page</h3>
       <h4>Count from Popup: {countSync}</h4>
     </main>
   )
 }
 
-export default Options
+export default SidePanel

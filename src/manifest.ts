@@ -1,8 +1,11 @@
-import { defineManifest } from '@crxjs/vite-plugin'
-import packageData from '../package.json'
+import { defineManifest } from "@crxjs/vite-plugin";
+import packageData from "../package.json";
 
 //@ts-ignore
-const isDev = process.env.NODE_ENV == 'development'
+const isDev = process.env.NODE_ENV == "development";
+// const gcpAuthClientId = import.meta.env.VITE_GCP_AUTH_CLIENT_ID;
+const gcpAuthClientId =
+	"";
 
 export default defineManifest({
 	name: `${packageData.displayName || packageData.name}${isDev ? ` ➡️ Dev` : ""}`,
@@ -10,17 +13,18 @@ export default defineManifest({
 	version: packageData.version,
 	manifest_version: 3,
 	icons: {
-		16: "img/logo-16.png",
-		32: "img/logo-34.png",
-		48: "img/logo-48.png",
-		128: "img/logo-128.png",
+		16: "logo/logo-16.png",
+		32: "logo/logo-32.png",
+		48: "logo/logo-48.png",
+		192: "logo/logo-192.png",
+		512: "logo/logo-512.png",
 	},
 	action: {
 		default_popup: "popup.html",
-		default_icon: "img/logo-48.png",
+		default_icon: "logo/logo-48.png",
 	},
 	options_page: "options.html",
-	devtools_page: "devtools.html",
+	// devtools_page: 'devtools.html',
 	background: {
 		service_worker: "src/background/index.ts",
 		type: "module",
@@ -28,6 +32,7 @@ export default defineManifest({
 	content_scripts: [
 		{
 			matches: ["http://*/*", "https://*/*"],
+			run_at: "document_end",
 			js: ["src/contentScript/index.ts"],
 		},
 	],
@@ -37,10 +42,11 @@ export default defineManifest({
 	web_accessible_resources: [
 		{
 			resources: [
-				"img/logo-16.png",
-				"img/logo-34.png",
-				"img/logo-48.png",
-				"img/logo-128.png",
+				"logo/logo-16.png",
+				"logo/logo-32.png",
+				"logo/logo-48.png",
+				"logo/logo-192.png",
+				"logo/logo-512.png",
 			],
 			matches: [],
 		},
@@ -53,7 +59,23 @@ export default defineManifest({
 		"identity",
 		"sidePanel",
 	],
-	chrome_url_overrides: {
-		newtab: "newtab.html",
+	host_permissions: [
+		"https://www.googleapis.com/*",
+		"https://fonts.googleapis.com/*",
+	],
+	oauth2: {
+		client_id: gcpAuthClientId,
+		scopes: [
+			"https://www.googleapis.com/auth/userinfo.email",
+			"https://www.googleapis.com/auth/userinfo.profile",
+		],
 	},
+	// key: "-----BEGIN PUBLIC KEY-----\n<fill-me>\n-----END PUBLIC KEY-----",
+	content_security_policy: {
+		extension_pages:
+			"script-src 'self'; object-src 'self'; script-src-elem 'self'",
+	},
+	// chrome_url_overrides: {
+	//   newtab: 'newtab.html',
+	// },
 });

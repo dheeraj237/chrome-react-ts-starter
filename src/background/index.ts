@@ -1,47 +1,49 @@
-import { ActionType, ContextMenuAction } from '../types/Chrome'
-import packageData from '../../package.json'
+import { ActionType, ContextMenuAction } from "../types/Chrome";
+import packageData from "../../package.json";
 
-let isSidePanelEnabled = false
+var isSidePanelEnabled = true;
 
-chrome.runtime.onMessage.addListener((request) => {
-  console.log(`Recieved Action Type: ${request.type}`)
-  if (request.type === ActionType.COUNT) {
-    console.log('backgroud script, recieved count: ', request?.count)
-  }
-  if (request.type === ActionType.TOGGLE_SIDEPANEL) {
-    if (request?.enable) {
-      // opening side panel
-      chrome.sidePanel.setOptions({ enabled: true, tabId: request?.tabId, path: chrome.runtime.getManifest().side_panel.default_path })
-      chrome.sidePanel.open({ tabId: request?.tabId, windowId: request?.windowId})
-      isSidePanelEnabled = true
-    } else {
-      chrome.sidePanel.setOptions({ enabled: false, tabId: request?.tabId })
-      isSidePanelEnabled = false
-    }
-  }
-})
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+	console.log(`Recieved Action Type: ${request.type}`);
+
+	if (request.type === ActionType.TOGGLE_SIDEPANEL) {
+		handleSidePanel(isSidePanelEnabled, request);
+		sendResponse(isSidePanelEnabled);
+	}
+});
 
 // register context menu
 chrome.runtime.onInstalled.addListener(() => {
-  chrome.contextMenus.create({
-    id: ContextMenuAction.OPEN_SIDE_PANEL,
-    title: packageData.displayName,
-    contexts: ['all'],
-  })
-})
+	chrome.contextMenus.create({
+		id: ContextMenuAction.OPEN_SIDE_PANEL,
+		title: packageData.displayName,
+		contexts: ["all"],
+	});
+});
 // context menu click event listener
 chrome.contextMenus.onClicked.addListener((info, tab) => {
-  if (tab) {
-    isSidePanelEnabled = !isSidePanelEnabled
-    if (isSidePanelEnabled) {
-      chrome.sidePanel.setOptions({
-        enabled: true,
-        tabId: tab?.id,
-        path: chrome.runtime.getManifest().side_panel.default_path,
-      })
-      chrome.sidePanel.open({ tabId: tab?.id, windowId: tab?.windowId })
-    } else {
-      chrome.sidePanel.setOptions({ enabled: isSidePanelEnabled, tabId: tab?.id })
-    }
-  }
-})
+	if (tab && isSidePanelEnabled) {
+		handleSidePanel(true, tab); // always open only as this fails when open and close
+	}
+});
+
+function handleSidePanel(enable: boolean, tab: any) {
+	try {
+		if (enable) {
+			chrome.sidePanel.setOptions({
+				enabled: enable,
+				path: chrome.runtime.getManifest().side_panel.default_path,
+			});
+			chrome.sidePanel.open({ tabId: tab?.id, windowId: tab?.windowId });
+			isSidePanelEnabled = false;
+		} else {
+			chrome.sidePanel.setOptions({
+				enabled: enable,
+				tabId: tab?.id,
+			});
+			isSidePanelEnabled = true;
+		}
+	} catch (error) {
+		console.error("Error in handleSidePanel", error);
+	}
+}
